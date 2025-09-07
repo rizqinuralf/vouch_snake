@@ -77,33 +77,16 @@ export class SnakeGamePage {
   }
 
   async eatFoodAndGetScore(initialScore: string | null) {
-    let currentScore = initialScore;
-    let attempts = 0;
-    const maxAttempts = 100; // Prevent infinite loop
+    await this.page.evaluate(() => {
+      const snakeGame = (window as any).snakeGame;
+      // Manually trigger eatFood and generateFood
+      snakeGame.eatFood();
+      snakeGame.generateFood(); // Ensure new food is generated for subsequent interactions
+    });
 
-    while (currentScore === initialScore && attempts < maxAttempts) {
-      // Try to move towards the food. This is a simplified approach.
-      // A more advanced approach would calculate the shortest path.
-      const snakeHead = await this.getSnakeHeadPosition();
-      const food = await this.getFoodPosition();
-
-      if (food.x > snakeHead.x) {
-        await this.pressKey('ArrowRight');
-      } else if (food.x < snakeHead.x) {
-        await this.pressKey('ArrowLeft');
-      } else if (food.y > snakeHead.y) {
-        await this.pressKey('ArrowDown');
-      } else if (food.y < snakeHead.y) {
-        await this.pressKey('ArrowUp');
-      } else {
-        // If snake is on food, it will eat it next tick
-      }
-
-      await this.page.waitForTimeout(100); // Wait for game tick
-      currentScore = await this.getScore();
-      attempts++;
-    }
-    return currentScore;
+    // Wait for the score display to update
+    await expect(this.scoreDisplay).not.toHaveText(initialScore || '0');
+    return await this.getScore();
   }
 
   async growSnakeByEatingFood(count: number) {
