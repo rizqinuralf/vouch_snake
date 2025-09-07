@@ -7,6 +7,11 @@ test.describe('Snake Game', () => {
   test.beforeEach(async ({ page }) => {
     snakeGamePage = new SnakeGamePage(page);
     await snakeGamePage.goto();
+    // Wait for the snakeGame object and its essential properties to be available and populated
+    await page.waitForFunction(() => {
+      const sg = (window as any).snakeGame;
+      return sg && sg.snake && sg.snake.length > 0 && sg.food && sg.direction;
+    });
   });
 
   test('should have the correct title', async ({ page }) => {

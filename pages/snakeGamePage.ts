@@ -12,10 +12,10 @@ export class SnakeGamePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.startGameButton = page.locator('#startGameBtn'); // Using ID for more specificity
+    this.startGameButton = page.locator('#startBtn'); // Using ID for more specificity
     this.pauseButton = page.locator('#pauseBtn'); // Using ID for more specificity
     this.scoreDisplay = page.locator('#score');
-    this.gameOverMessage = page.locator('#gameOverMessage');
+    this.gameOverMessage = page.locator('#gameOver');
     this.playAgainButton = page.locator('#playAgainBtn'); // Assuming an ID for Play Again button
     this.resetButton = page.locator('#resetBtn'); // Assuming an ID for Reset button
     this.gameCanvas = page.locator('#gameCanvas'); // Assuming an ID for the canvas
@@ -119,8 +119,8 @@ export class SnakeGamePage {
   async getGameState() {
     return await this.page.evaluate(() => {
       return (window as any).snakeGame.isGameOver ? 'gameOver' :
-             (window as any).snakeGame.isPaused ? 'paused' :
-             'running';
+        (window as any).snakeGame.isPaused ? 'paused' :
+          'running';
     });
   }
 
