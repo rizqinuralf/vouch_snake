@@ -33,3 +33,7 @@ build/
 
 # Playwright reports
 playwright-report/
+
+# Test results and Gemini markdown
+test-results/
+gemini.md
