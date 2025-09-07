@@ -77,6 +77,21 @@ test.describe('Snake Game', () => {
     expect(parseInt(finalScore || '0')).toBeGreaterThan(parseInt(initialScore || '0'));
   });
 
+  test('should reach a score of 100 by eating food', async ({ page }) => {
+    await snakeGamePage.clickStartGameButton();
+    let currentScore = 0;
+    const targetScore = 100;
+
+    while (currentScore < targetScore) {
+      const initialScore = await snakeGamePage.getScore();
+      await snakeGamePage.eatFoodAndGetScore(initialScore);
+      currentScore = parseInt(await snakeGamePage.getScore() || '0');
+      // Add a small timeout to allow game state to settle, if necessary
+      await page.waitForTimeout(50);
+    }
+    expect(currentScore).toBe(targetScore);
+  });
+
   test('should end the game when the snake hits a wall', async ({ page }) => {
     await snakeGamePage.clickStartGameButton();
     await snakeGamePage.pressKey('ArrowLeft'); // Set direction towards a wall
